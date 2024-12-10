@@ -1,0 +1,11 @@
+{
+  "name": "typebot-telegram-adapter",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "serverless": "^4.1.15"
+  },
+  "scripts": {
+    "sls": "sls"
+  }
+}

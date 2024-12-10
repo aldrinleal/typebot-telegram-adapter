@@ -1,0 +1,55 @@
+org: ingenieux
+app: typebot-telegram-adapter
+service: tbtgadapter
+frameworkVersion: '>=4.4.0 <5.0.0'
+
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: provided.al2023
+  region: ${opt:region, 'us-west-2'}
+  stage: ${opt:stage,'dev'}
+  deploymentBucket:
+    name: ${self:org}-sls-deployment-${self:provider.region}
+  environment:
+    # you can define service wide environment variables here
+    GIN_MODE: "release"
+    STAGE: ${self:provider.stage}
+  memorySize: 256
+  timeout: 30
+  lambdaHashingVersion: 20201221
+  ecr:
+    images:
+      service:
+        path: ./
+  httpApi:
+    payload: '1.0'
+  apiGateway:
+    shouldStartNameWithService: true
+  # iamRoleStatements:
+  #   - Effect: "Allow"
+  #     Action:
+  #       - "sns:*"
+  #       - "s3:*"
+  #     Resource: "*"
+
+package:
+  patterns:
+    - '!./**'
+    - './bin/**'
+
+functions:
+  service:
+    image:
+        name: service
+    events:
+      - http:
+          path: /
+          method: GET
+      - http:
+          path: /{path+}
+          method: any
+
+resources:
+  Description: "Generic Sample Project - see github.com/aldrinleal/sls-go-template"
